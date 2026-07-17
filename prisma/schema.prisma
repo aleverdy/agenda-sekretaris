@@ -1,0 +1,51 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Agenda {
+  id             String     @id @default(uuid())
+  title          String
+  description    String?
+  startDate      DateTime
+  endDate        DateTime
+  isAllDay       Boolean    @default(false)
+  location       String?
+  reminderSentAt DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  participants   AgendaParticipant[]
+}
+
+model Participant {
+  id        String   @id @default(uuid())
+  name      String
+  type      String   // "DIREKSI" or "DIVISI"
+  email     String?
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  agendas   AgendaParticipant[]
+}
+
+model AgendaParticipant {
+  id            String      @id @default(uuid())
+  agendaId      String
+  participantId String
+
+  agenda        Agenda      @relation(fields: [agendaId], references: [id], onDelete: Cascade)
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@unique([agendaId, participantId])
+}
