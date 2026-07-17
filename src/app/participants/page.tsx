@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { PrismaClient } from '@prisma/client';
 import { Mail, Phone, Building, User } from 'lucide-react';
 import AddParticipantModal from '@/components/AddParticipantModal';

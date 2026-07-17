@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { PrismaClient } from '@prisma/client';
 import CalendarView from '@/components/CalendarView';
 import AddAgendaModal from '@/components/AddAgendaModal';
