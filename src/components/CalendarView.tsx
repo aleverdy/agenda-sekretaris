@@ -31,7 +31,12 @@ type Agenda = {
   participants: AgendaParticipant[];
 };
 
+import { useState } from 'react';
+import EventDetailModal from './EventDetailModal';
+
 export default function CalendarView({ initialAgendas }: { initialAgendas: Agenda[] }) {
+  const [selectedAgenda, setSelectedAgenda] = useState<Agenda | null>(null);
+
   const events: Event[] = initialAgendas.map(agenda => ({
     title: agenda.title,
     start: new Date(agenda.startDate),
@@ -40,22 +45,31 @@ export default function CalendarView({ initialAgendas }: { initialAgendas: Agend
   }));
 
   return (
-    <Calendar
-      localizer={localizer}
-      events={events}
-      startAccessor="start"
-      endAccessor="end"
-      style={{ height: '100%', background: 'rgba(255, 255, 255, 0.4)', borderRadius: '16px', padding: '16px' }}
-      culture="id-ID"
-      messages={{
-        next: "Selanjutnya",
-        previous: "Sebelumnya",
-        today: "Hari Ini",
-        month: "Bulan",
-        week: "Minggu",
-        day: "Hari",
-        agenda: "Daftar Agenda"
-      }}
-    />
+    <>
+      <Calendar
+        localizer={localizer}
+        events={events}
+        startAccessor="start"
+        endAccessor="end"
+        style={{ height: '100%', background: 'rgba(255, 255, 255, 0.4)', borderRadius: '16px', padding: '16px' }}
+        culture="id-ID"
+        onSelectEvent={(event) => setSelectedAgenda(event.resource as Agenda)}
+        messages={{
+          next: "Selanjutnya",
+          previous: "Sebelumnya",
+          today: "Hari Ini",
+          month: "Bulan",
+          week: "Minggu",
+          day: "Hari",
+          agenda: "Daftar Agenda"
+        }}
+      />
+      {selectedAgenda && (
+        <EventDetailModal 
+          agenda={selectedAgenda} 
+          onClose={() => setSelectedAgenda(null)} 
+        />
+      )}
+    </>
   );
 }
