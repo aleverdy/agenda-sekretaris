@@ -43,12 +43,12 @@ export async function POST(
       let sent = false;
       
       if (p.email) {
-        const emailSent = await sendEmailReminder(p.email, agenda.title, dateStr, agenda.location);
+        const emailSent = await sendEmailReminder(p.email, p.name, agenda.title, dateStr, agenda.location);
         if (emailSent) sent = true;
       }
       
       if (p.phone) {
-        const chatSent = await sendChatReminder(p.phone, agenda.title, dateStr, agenda.location);
+        const chatSent = await sendChatReminder(p.phone, p.name, agenda.title, dateStr, agenda.location);
         if (chatSent) sent = true;
       }
       

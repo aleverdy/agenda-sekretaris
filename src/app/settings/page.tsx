@@ -1,10 +1,39 @@
 'use client';
 import { Bell, Key, Moon, Palette, Shield, MessageCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function SettingsPage() {
   const [testPhone, setTestPhone] = useState('');
   const [testStatus, setTestStatus] = useState('');
+
+  const [waTemplate, setWaTemplate] = useState('');
+  const [isSavingTemplate, setIsSavingTemplate] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/settings').then(res => res.json()).then(data => {
+      if (data.success && data.data['CHAT_TEMPLATE']) {
+        setWaTemplate(data.data['CHAT_TEMPLATE']);
+      } else {
+        setWaTemplate('Halo [NAMA],\n\nIni adalah pesan pengingat untuk agenda Anda berikut ini:\n\n📌 *[JUDUL]*\n⏰ Waktu: [WAKTU]\n📍 Lokasi: [LOKASI]\n\nMohon persiapkan diri Anda. Terima kasih.\n\n_Pesan otomatis dari Sistem Agenda Sekretaris_');
+      }
+    });
+  }, []);
+
+  const handleSaveTemplate = async () => {
+    setIsSavingTemplate(true);
+    try {
+      await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'CHAT_TEMPLATE', value: waTemplate })
+      });
+      alert('Template berhasil disimpan!');
+    } catch (err) {
+      alert('Gagal menyimpan template');
+    } finally {
+      setIsSavingTemplate(false);
+    }
+  };
 
   const handleTestWA = async () => {
     if (!testPhone) {
@@ -34,6 +63,35 @@ export default function SettingsPage() {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', maxWidth: '800px' }}>
         
+        {/* Template Section */}
+        <section className="glass-card" style={{ padding: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+            <MessageCircle size={24} style={{ color: 'var(--primary)' }} />
+            <h2 style={{ fontSize: '20px', fontWeight: '600' }}>Template Pesan Pengingat</h2>
+          </div>
+          <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '16px' }}>
+            Anda bisa menggunakan kata kunci berikut yang akan otomatis diganti oleh sistem:<br/>
+            <code>[NAMA]</code>, <code>[JUDUL]</code>, <code>[WAKTU]</code>, <code>[LOKASI]</code>
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <textarea 
+              className="input-field"
+              value={waTemplate}
+              onChange={(e) => setWaTemplate(e.target.value)}
+              rows={8}
+              style={{ width: '100%', resize: 'vertical' }}
+            />
+            <button 
+              className="btn btn-primary" 
+              onClick={handleSaveTemplate}
+              disabled={isSavingTemplate}
+              style={{ alignSelf: 'flex-end' }}
+            >
+              {isSavingTemplate ? 'Menyimpan...' : 'Simpan Template'}
+            </button>
+          </div>
+        </section>
+
         {/* Integrasi API Section */}
         <section className="glass-card" style={{ padding: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>

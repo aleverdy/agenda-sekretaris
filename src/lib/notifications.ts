@@ -1,8 +1,24 @@
 import nodemailer from 'nodemailer';
+import { PrismaClient } from '@prisma/client';
 
-export async function sendEmailReminder(email: string, agendaTitle: string, date: string, location: string | null) {
+const prisma = new PrismaClient();
+
+async function getTemplate(key: string, defaultValue: string) {
+  const setting = await prisma.setting.findUnique({ where: { key } });
+  return setting?.value || defaultValue;
+}
+
+function processTemplate(template: string, name: string, title: string, date: string, location: string | null) {
+  return template
+    .replace(/\[NAMA\]/g, name)
+    .replace(/\[JUDUL\]/g, title)
+    .replace(/\[WAKTU\]/g, date)
+    .replace(/\[LOKASI\]/g, location || 'Menyusul');
+}
+
+export async function sendEmailReminder(email: string, participantName: string, agendaTitle: string, date: string, location: string | null) {
   if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-    console.log('[EMAIL SKIPPED] Missing GMAIL_USER or GMAIL_APP_PASSWORD in env');
+    console.log('[EMAIL SKIPPED] Missing env');
     return false;
   }
 
@@ -15,30 +31,37 @@ export async function sendEmailReminder(email: string, agendaTitle: string, date
       },
     });
 
+    // We can add email template later if needed, using a basic one for now or the same template logic
+    const defaultText = `Halo [NAMA],\n\nIni adalah pesan pengingat untuk agenda Anda berikut ini:\n\nJudul: [JUDUL]\nWaktu: [WAKTU]\nLokasi: [LOKASI]\n\nMohon persiapkan diri Anda.\n\nSalam,\nSekretaris`;
+    
+    // For simplicity, let's reuse CHAT_TEMPLATE if EMAIL_TEMPLATE is not set, or just use default text.
+    const rawTemplate = await getTemplate('EMAIL_TEMPLATE', defaultText);
+    const text = processTemplate(rawTemplate, participantName, agendaTitle, date, location);
+
     const mailOptions = {
       from: `"Agenda Sekretaris" <${process.env.GMAIL_USER}>`,
       to: email,
       subject: `Pengingat Agenda: ${agendaTitle}`,
-      text: `Halo,\n\nIni adalah pesan pengingat bahwa Anda memiliki agenda berikut:\n\nJudul: ${agendaTitle}\nWaktu: ${date}\nLokasi: ${location || 'Tidak disebutkan'}\n\nMohon persiapkan diri Anda.\n\nSalam,\nSekretaris`,
+      text: text,
     };
 
     await transporter.sendMail(mailOptions);
-    console.log(`[EMAIL SUCCESS] Sent to ${email}`);
     return true;
   } catch (error) {
-    console.error(`[EMAIL ERROR] Failed to send to ${email}:`, error);
     return false;
   }
 }
 
-export async function sendChatReminder(phone: string, agendaTitle: string, date: string, location: string | null) {
+export async function sendChatReminder(phone: string, participantName: string, agendaTitle: string, date: string, location: string | null) {
   if (!process.env.FONNTE_TOKEN) {
-    console.log('[CHAT SKIPPED] Missing FONNTE_TOKEN in env');
+    console.log('[CHAT SKIPPED] Missing env');
     return false;
   }
 
   try {
-    const message = `Halo Bapak/Ibu,\n\nIni adalah pesan pengingat untuk agenda Anda berikut ini:\n\n📌 *${agendaTitle}*\n⏰ Waktu: ${date}\n📍 Lokasi: ${location || 'Menyusul'}\n\nMohon persiapkan diri Anda. Terima kasih.\n\n_Pesan otomatis dari Sistem Agenda Sekretaris_`;
+    const defaultMsg = `Halo [NAMA],\n\nIni adalah pesan pengingat untuk agenda Anda berikut ini:\n\n📌 *[JUDUL]*\n⏰ Waktu: [WAKTU]\n📍 Lokasi: [LOKASI]\n\nMohon persiapkan diri Anda. Terima kasih.\n\n_Pesan otomatis dari Sistem Agenda Sekretaris_`;
+    const rawTemplate = await getTemplate('CHAT_TEMPLATE', defaultMsg);
+    const message = processTemplate(rawTemplate, participantName, agendaTitle, date, location);
     
     const response = await fetch('https://api.fonnte.com/send', {
       method: 'POST',
@@ -52,15 +75,8 @@ export async function sendChatReminder(phone: string, agendaTitle: string, date:
     });
 
     const result = await response.json();
-    if (result.status) {
-      console.log(`[CHAT SUCCESS] WhatsApp sent to ${phone}`);
-      return true;
-    } else {
-      console.error(`[CHAT ERROR] Fonnte error for ${phone}:`, result.reason);
-      return false;
-    }
+    return result.status === true;
   } catch (error) {
-    console.error(`[CHAT ERROR] Failed to send to ${phone}:`, error);
     return false;
   }
 }

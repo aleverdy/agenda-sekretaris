@@ -43,15 +43,15 @@ export async function GET(request: Request) {
       const dateStr = agenda.startDate.toLocaleString('id-ID');
       
       for (const ap of agenda.participants) {
-        const participant = ap.participant;
+        const p = ap.participant;
         
-        if (participant.email) {
-          await sendEmailReminder(participant.email, agenda.title, dateStr, agenda.location);
+        if (p.email) {
+          await sendEmailReminder(p.email, p.name, agenda.title, dateStr, agenda.location);
           emailsSent++;
         }
         
-        if (participant.phone) {
-          await sendChatReminder(participant.phone, agenda.title, dateStr, agenda.location);
+        if (p.phone) {
+          await sendChatReminder(p.phone, p.name, agenda.title, dateStr, agenda.location);
           chatsSent++;
         }
       }

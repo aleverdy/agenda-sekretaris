@@ -49,3 +49,8 @@ model AgendaParticipant {
 
   @@unique([agendaId, participantId])
 }
+
+model Setting {
+  key   String @id
+  value String
+}
