@@ -61,6 +61,8 @@ export default function SettingsPage() {
               </div>
               {testStatus && <p style={{ marginTop: '12px', fontSize: '14px', fontWeight: '500' }}>{testStatus}</p>}
             </div>
+          </div>
+        </section>
 
         {/* Preferensi Notifikasi Section */}
         <section className="glass-card" style={{ padding: '24px' }}>
