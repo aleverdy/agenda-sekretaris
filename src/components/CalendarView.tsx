@@ -34,7 +34,7 @@ type Agenda = {
 import { useState } from 'react';
 import EventDetailModal from './EventDetailModal';
 
-export default function CalendarView({ initialAgendas }: { initialAgendas: Agenda[] }) {
+export default function CalendarView({ initialAgendas, isAdmin }: { initialAgendas: Agenda[], isAdmin?: boolean }) {
   const [selectedAgenda, setSelectedAgenda] = useState<Agenda | null>(null);
 
   const events: Event[] = initialAgendas.map(agenda => ({
@@ -67,7 +67,8 @@ export default function CalendarView({ initialAgendas }: { initialAgendas: Agend
       {selectedAgenda && (
         <EventDetailModal 
           agenda={selectedAgenda} 
-          onClose={() => setSelectedAgenda(null)} 
+          onClose={() => setSelectedAgenda(null)}
+          isAdmin={isAdmin}
         />
       )}
     </>

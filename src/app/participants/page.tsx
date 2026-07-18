@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import { Mail, Phone, Building, User } from 'lucide-react';
 import AddParticipantModal from '@/components/AddParticipantModal';
 import DeleteParticipantButton from '@/components/DeleteParticipantButton';
+import { getIsAdmin } from '@/lib/auth';
 
 const prisma = new PrismaClient();
 
@@ -15,6 +16,8 @@ export default async function ParticipantsPage() {
     ]
   });
 
+  const isAdmin = await getIsAdmin();
+
   return (
     <div className="glass-panel" style={{ padding: '24px', minHeight: 'calc(100vh - 64px)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
@@ -22,7 +25,7 @@ export default async function ParticipantsPage() {
           <h1 style={{ fontSize: '28px', fontWeight: 'bold' }}>Direksi & Divisi</h1>
           <p style={{ color: 'var(--text-muted)' }}>Kelola data kontak peserta agenda</p>
         </div>
-        <AddParticipantModal />
+        {isAdmin && <AddParticipantModal />}
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
@@ -48,7 +51,7 @@ export default async function ParticipantsPage() {
                     {p.type}
                   </span>
                 </div>
-                <DeleteParticipantButton id={p.id} />
+                {isAdmin && <DeleteParticipantButton id={p.id} />}
               </div>
             </div>
 

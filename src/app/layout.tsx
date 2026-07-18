@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 
+import { getIsAdmin } from "@/lib/auth";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -18,15 +20,17 @@ export const metadata: Metadata = {
   description: "Sistem manajemen agenda untuk Sekretaris Direksi",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isAdmin = await getIsAdmin();
+
   return (
     <html lang="id" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <Sidebar />
+        <Sidebar isAdmin={isAdmin} />
         <main style={{ marginLeft: '260px', padding: '32px', minHeight: '100vh' }}>
           {children}
         </main>

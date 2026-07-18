@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation';
 
 export default function EventDetailModal({ 
   agenda, 
-  onClose 
+  onClose,
+  isAdmin
 }: { 
   agenda: any, 
-  onClose: () => void 
+  onClose: () => void,
+  isAdmin?: boolean
 }) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
@@ -84,26 +86,28 @@ export default function EventDetailModal({
           </ul>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <button 
-            onClick={handleSendReminder}
-            disabled={isSending}
-            className="btn btn-primary"
-            style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px' }}
-          >
-            {isSending ? 'Mengirim...' : 'Kirim Pengingat Sekarang'}
-          </button>
+        {isAdmin && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <button 
+              onClick={handleSendReminder}
+              disabled={isSending}
+              className="btn btn-primary"
+              style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px' }}
+            >
+              {isSending ? 'Mengirim...' : 'Kirim Pengingat Sekarang'}
+            </button>
 
-          <button 
-            onClick={handleDelete}
-            disabled={isDeleting}
-            className="btn"
-            style={{ width: '100%', background: '#ef4444', color: 'white', display: 'flex', justifyContent: 'center', gap: '8px', border: 'none' }}
-          >
-            <Trash2 size={18} />
-            {isDeleting ? 'Menghapus...' : 'Hapus Agenda Ini'}
-          </button>
-        </div>
+            <button 
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="btn"
+              style={{ width: '100%', background: '#ef4444', color: 'white', display: 'flex', justifyContent: 'center', gap: '8px', border: 'none' }}
+            >
+              <Trash2 size={18} />
+              {isDeleting ? 'Menghapus...' : 'Hapus Agenda Ini'}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
