@@ -12,6 +12,28 @@ export default function EventDetailModal({
 }) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+
+  const handleSendReminder = async () => {
+    if (!confirm('Kirim pesan pengingat ke semua partisipan sekarang?')) return;
+    
+    setIsSending(true);
+    try {
+      const res = await fetch(`/api/agendas/${agenda.id}/remind`, {
+        method: 'POST',
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert('✅ ' + data.message);
+      } else {
+        alert('❌ Gagal: ' + data.error);
+      }
+    } catch (err) {
+      alert('❌ Terjadi kesalahan jaringan');
+    } finally {
+      setIsSending(false);
+    }
+  };
 
   const handleDelete = async () => {
     if (!confirm('Apakah Anda yakin ingin menghapus agenda ini secara permanen?')) return;
@@ -62,15 +84,26 @@ export default function EventDetailModal({
           </ul>
         </div>
 
-        <button 
-          onClick={handleDelete}
-          disabled={isDeleting}
-          className="btn"
-          style={{ width: '100%', background: '#ef4444', color: 'white', display: 'flex', justifyContent: 'center', gap: '8px', border: 'none' }}
-        >
-          <Trash2 size={18} />
-          {isDeleting ? 'Menghapus...' : 'Hapus Agenda Ini'}
-        </button>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <button 
+            onClick={handleSendReminder}
+            disabled={isSending}
+            className="btn btn-primary"
+            style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '8px' }}
+          >
+            {isSending ? 'Mengirim...' : 'Kirim Pengingat Sekarang'}
+          </button>
+
+          <button 
+            onClick={handleDelete}
+            disabled={isDeleting}
+            className="btn"
+            style={{ width: '100%', background: '#ef4444', color: 'white', display: 'flex', justifyContent: 'center', gap: '8px', border: 'none' }}
+          >
+            <Trash2 size={18} />
+            {isDeleting ? 'Menghapus...' : 'Hapus Agenda Ini'}
+          </button>
+        </div>
       </div>
     </div>
   );
