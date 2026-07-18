@@ -37,7 +37,6 @@ export default async function ParticipantsPage() {
               }}>
                 {p.type === 'DIREKSI' ? <User size={20} /> : <Building size={20} />}
               </div>
-              </div>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flex: 1 }}>
                 <div>
                   <h3 style={{ fontWeight: '600', fontSize: '16px' }}>{p.name}</h3>
