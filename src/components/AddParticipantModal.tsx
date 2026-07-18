@@ -60,11 +60,18 @@ export default function AddParticipantModal() {
               </div>
 
               <div>
-                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>Tipe</label>
-                <select className="input-field" value={type} onChange={e => setType(e.target.value)} style={{ padding: '12px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>Tipe / Peran (Bisa diisi manual)</label>
+                <input 
+                  list="type-options" 
+                  className="input-field" 
+                  value={type} 
+                  onChange={e => setType(e.target.value)} 
+                  placeholder="Contoh: Klien, Eksternal, dll" 
+                />
+                <datalist id="type-options">
                   <option value="DIREKSI">Direksi</option>
                   <option value="DIVISI">Divisi</option>
-                </select>
+                </datalist>
               </div>
 
               <div>

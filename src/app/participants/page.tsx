@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import { PrismaClient } from '@prisma/client';
 import { Mail, Phone, Building, User } from 'lucide-react';
 import AddParticipantModal from '@/components/AddParticipantModal';
+import DeleteParticipantButton from '@/components/DeleteParticipantButton';
 
 const prisma = new PrismaClient();
 
@@ -36,15 +37,19 @@ export default async function ParticipantsPage() {
               }}>
                 {p.type === 'DIREKSI' ? <User size={20} /> : <Building size={20} />}
               </div>
-              <div>
-                <h3 style={{ fontWeight: '600', fontSize: '16px' }}>{p.name}</h3>
-                <span style={{ 
-                  fontSize: '12px', padding: '2px 8px', borderRadius: '12px',
-                  background: p.type === 'DIREKSI' ? 'var(--primary)' : '#10b981',
-                  color: 'white', fontWeight: '500'
-                }}>
-                  {p.type}
-                </span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flex: 1 }}>
+                <div>
+                  <h3 style={{ fontWeight: '600', fontSize: '16px' }}>{p.name}</h3>
+                  <span style={{ 
+                    fontSize: '12px', padding: '2px 8px', borderRadius: '12px',
+                    background: p.type === 'DIREKSI' ? 'var(--primary)' : (p.type === 'DIVISI' ? '#10b981' : '#f59e0b'),
+                    color: 'white', fontWeight: '500'
+                  }}>
+                    {p.type}
+                  </span>
+                </div>
+                <DeleteParticipantButton id={p.id} />
               </div>
             </div>
 
