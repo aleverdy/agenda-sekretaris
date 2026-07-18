@@ -1,6 +1,30 @@
-import { Bell, Key, Moon, Palette, Shield } from 'lucide-react';
+'use client';
+import { Bell, Key, Moon, Palette, Shield, MessageCircle } from 'lucide-react';
+import { useState } from 'react';
 
 export default function SettingsPage() {
+  const [testPhone, setTestPhone] = useState('');
+  const [testStatus, setTestStatus] = useState('');
+
+  const handleTestWA = async () => {
+    if (!testPhone) {
+      setTestStatus('Silakan masukkan nomor WA');
+      return;
+    }
+    setTestStatus('Mengirim...');
+    try {
+      const res = await fetch(`/api/test-wa?phone=${testPhone}`);
+      const data = await res.json();
+      if (data.success) {
+        setTestStatus('✅ Berhasil terkirim!');
+      } else {
+        setTestStatus(`❌ Gagal: ${data.error || 'Terjadi kesalahan'}`);
+      }
+    } catch (err) {
+      setTestStatus('❌ Gagal menghubungi server');
+    }
+  };
+
   return (
     <div className="glass-panel" style={{ padding: '24px', minHeight: 'calc(100vh - 64px)' }}>
       <div style={{ marginBottom: '32px' }}>
@@ -17,17 +41,26 @@ export default function SettingsPage() {
             <h2 style={{ fontSize: '20px', fontWeight: '600' }}>Integrasi API Layanan</h2>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>API Key WhatsApp (Fonnte/Twilio)</label>
-              <input type="password" placeholder="Masukkan API Key untuk notifikasi WA" className="input-field" />
+            <div style={{ padding: '16px', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '8px', border: '1px solid rgba(59, 130, 246, 0.2)' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <MessageCircle size={18} /> Uji Coba Pengiriman WA (Fonnte)
+              </h3>
+              <p style={{ fontSize: '14px', marginBottom: '12px', color: 'var(--text-muted)' }}>
+                Pastikan Anda telah memasukkan FONNTE_TOKEN di Vercel Settings sebelum mencoba.
+              </p>
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <input 
+                  type="text" 
+                  placeholder="Contoh: 08123456789" 
+                  className="input-field" 
+                  value={testPhone}
+                  onChange={(e) => setTestPhone(e.target.value)}
+                  style={{ flex: 1, maxWidth: '250px' }}
+                />
+                <button className="btn btn-primary" onClick={handleTestWA}>Kirim Pesan Tes</button>
+              </div>
+              {testStatus && <p style={{ marginTop: '12px', fontSize: '14px', fontWeight: '500' }}>{testStatus}</p>}
             </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>Kredensial SMTP Email (Resend/SendGrid)</label>
-              <input type="password" placeholder="Masukkan SMTP Password atau API Key" className="input-field" />
-            </div>
-            <button className="btn btn-primary" style={{ alignSelf: 'flex-start', marginTop: '8px' }}>Simpan Kredensial</button>
-          </div>
-        </section>
 
         {/* Preferensi Notifikasi Section */}
         <section className="glass-card" style={{ padding: '24px' }}>
