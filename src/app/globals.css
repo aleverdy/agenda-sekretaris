@@ -281,3 +281,26 @@ body {
   align-items: center;
   margin-bottom: 24px;
 }
+
+.dashboard-panel {
+  padding: 24px;
+  min-height: calc(100vh - 64px);
+}
+
+.calendar-wrapper {
+  height: 700px;
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 16px;
+}
+
+.calendar-inner {
+  min-width: 700px; /* Force minimum width to prevent squishing and ensure scroll */
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  .dashboard-panel {
+    padding: 12px;
+  }
+}

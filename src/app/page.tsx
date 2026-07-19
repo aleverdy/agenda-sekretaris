@@ -25,7 +25,7 @@ export default async function Home() {
   const isAdmin = await getIsAdmin();
 
   return (
-    <div className="glass-panel" style={{ padding: '24px', minHeight: 'calc(100vh - 64px)' }}>
+    <div className="glass-panel dashboard-panel">
       <div className="flex-header">
         <div>
           <h1 style={{ fontSize: '28px', fontWeight: 'bold' }}>Dashboard Agenda</h1>
@@ -34,8 +34,10 @@ export default async function Home() {
         {isAdmin && <AddAgendaModal participants={participants} />}
       </div>
 
-      <div style={{ height: '700px' }}>
-        <CalendarView initialAgendas={agendas} isAdmin={isAdmin} />
+      <div className="calendar-wrapper">
+        <div className="calendar-inner">
+          <CalendarView initialAgendas={agendas} isAdmin={isAdmin} />
+        </div>
       </div>
     </div>
   );
