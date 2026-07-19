@@ -11,19 +11,18 @@ export async function GET(request: Request) {
       return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Cari agenda besok
-    const tomorrowStart = new Date();
-    tomorrowStart.setDate(tomorrowStart.getDate() + 1);
-    tomorrowStart.setHours(0, 0, 0, 0);
-
-    const tomorrowEnd = new Date(tomorrowStart);
-    tomorrowEnd.setHours(23, 59, 59, 999);
+    // Cari semua agenda dari saat ini hingga akhir hari esok
+    // yang belum pernah dikirimi pengingat
+    const now = new Date();
+    const endOfTomorrow = new Date();
+    endOfTomorrow.setDate(endOfTomorrow.getDate() + 1);
+    endOfTomorrow.setHours(23, 59, 59, 999);
 
     const agendas = await prisma.agenda.findMany({
       where: {
         startDate: {
-          gte: tomorrowStart,
-          lte: tomorrowEnd
+          gte: now,
+          lte: endOfTomorrow
         },
         reminderSentAt: null
       },
