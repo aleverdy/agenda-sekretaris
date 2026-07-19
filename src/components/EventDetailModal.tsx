@@ -2,11 +2,20 @@
 import { X, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+type ParticipantType = {
+  participant: {
+    id: string;
+    name: string;
+  }
+};
 
-import { Agenda, Participant } from '@prisma/client';
-
-type AgendaWithParticipants = Agenda & {
-  participants: { participant: Participant }[]
+type AgendaProp = {
+  id: string;
+  title: string;
+  startDate: string | Date;
+  endDate: string | Date;
+  location?: string | null;
+  participants: ParticipantType[];
 };
 
 export default function EventDetailModal({ 
@@ -14,7 +23,7 @@ export default function EventDetailModal({
   onClose,
   isAdmin
 }: { 
-  agenda: AgendaWithParticipants, 
+  agenda: AgendaProp, 
   onClose: () => void,
   isAdmin?: boolean
 }) {
