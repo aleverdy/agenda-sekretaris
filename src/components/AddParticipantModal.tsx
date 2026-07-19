@@ -50,7 +50,7 @@ export default function AddParticipantModal() {
           background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
         }}>
-          <div className="glass-panel" style={{ padding: '32px', width: '100%', maxWidth: '500px', background: 'rgba(15, 23, 42, 0.95)' }}>
+          <div className="glass-panel modal-content" style={{ padding: '32px', background: 'rgba(15, 23, 42, 0.95)', maxWidth: '500px' }}>
             <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '24px' }}>Tambah Kontak Baru</h2>
             
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>

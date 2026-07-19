@@ -20,7 +20,7 @@ export default async function ParticipantsPage() {
 
   return (
     <div className="glass-panel" style={{ padding: '24px', minHeight: 'calc(100vh - 64px)' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+      <div className="flex-header">
         <div>
           <h1 style={{ fontSize: '28px', fontWeight: 'bold' }}>Direksi & Divisi</h1>
           <p style={{ color: 'var(--text-muted)' }}>Kelola data kontak peserta agenda</p>

@@ -64,7 +64,7 @@ export default function EventDetailModal({
       backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000,
       display: 'flex', alignItems: 'center', justifyContent: 'center'
     }}>
-      <div className="glass-panel" style={{ padding: '24px', width: '100%', maxWidth: '400px', position: 'relative' }}>
+      <div className="glass-panel modal-content" style={{ padding: '24px' }}>
         <button onClick={onClose} style={{ position: 'absolute', top: '16px', right: '16px', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}>
           <X size={20} />
         </button>

@@ -106,14 +106,14 @@ export default function SettingsPage() {
               <p style={{ fontSize: '14px', marginBottom: '12px', color: 'var(--text-muted)' }}>
                 Pastikan Anda telah memasukkan FONNTE_TOKEN di Vercel Settings sebelum mencoba.
               </p>
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
                 <input 
                   type="text" 
                   placeholder="Contoh: 08123456789" 
                   className="input-field" 
                   value={testPhone}
                   onChange={(e) => setTestPhone(e.target.value)}
-                  style={{ flex: 1, maxWidth: '250px' }}
+                  style={{ flex: 1, minWidth: '200px', maxWidth: '250px' }}
                 />
                 <button className="btn btn-primary" onClick={handleTestWA}>Kirim Pesan Tes</button>
               </div>

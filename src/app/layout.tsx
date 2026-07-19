@@ -31,7 +31,7 @@ export default async function RootLayout({
     <html lang="id" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body suppressHydrationWarning>
         <Sidebar isAdmin={isAdmin} />
-        <main style={{ marginLeft: '260px', padding: '32px', minHeight: '100vh' }}>
+        <main className="main-content">
           {children}
         </main>
       </body>
